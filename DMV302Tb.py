@@ -4,8 +4,11 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 from matplotlib.colors import TwoSlopeNorm
 import matplotlib.dates as mdates
-from scipy import stats
+from scipy import stats # For sd
 
+# References. https://datavizcatalogue.com/index.html
+# Matplotlib dates https://matplotlib.org/stable/api/dates_api.html
+# Scipy stats for sd https://www.nature.com/articles/s41592-019-0686-2
 
 def load_and_preprocess_data():
     # Load and preprocess the weather data
@@ -161,7 +164,6 @@ def plot_rainfall_analysis(df):
     plt.savefig('rslt_rainfall_analysis.png', dpi=300)
     return fig
 
-
 def plot_climate_extremes(df):
     # Find days exceeding historical extremes
     record_high_days = df[df['Max_Temp'] > df['Historical_Highest']]
@@ -190,9 +192,11 @@ def plot_climate_extremes(df):
     ax1.legend(loc='best')
     ax1.grid(True, alpha=0.3)
 
-    # Format x-axis
-    ax2.xaxis.set_major_locator(mdates.MonthLocator())
-    ax2.xaxis.set_major_formatter(mdates.DateFormatter('%b'))
+    # Format x-axis to show months (set on ax1 since they sharex)
+    ax1.xaxis.set_major_locator(mdates.MonthLocator())
+    ax1.xaxis.set_major_formatter(mdates.DateFormatter('%b'))
+    plt.setp(ax1.get_xticklabels(), rotation=45, ha='right')
+
     # Rainfall records
     ax2.bar(df['Date'], df['Rainfall'], color='green', alpha=0.6)
     ax2.plot(df['Date'], df['Historical_Highest_Rain'], 'r--', 
@@ -208,10 +212,6 @@ def plot_climate_extremes(df):
     ax2.set_xlabel('Date')
     ax2.legend(loc='best')
     ax2.grid(True, alpha=0.3)
-    
-    # Format x-axis
-    ax2.xaxis.set_major_locator(mdates.MonthLocator())
-    ax2.xaxis.set_major_formatter(mdates.DateFormatter('%b'))
     
     plt.tight_layout()
     plt.savefig('rslt_climate_extremes.png', dpi=300)
