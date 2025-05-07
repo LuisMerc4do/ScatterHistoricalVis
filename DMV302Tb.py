@@ -80,7 +80,7 @@ def plot_temperature_ovw(df):
                    color='orange', s=50, label='Temperature Extremes')
     
     # Formatting
-    plt.title('Annual Temperature Patterns with Historical Context')
+    plt.title('Annual Temperature Patterns with Historical Metrics')
     plt.ylabel('Temperature (°C)')
     plt.grid(True, alpha=0.3)
     plt.legend(loc='best')
@@ -90,12 +90,11 @@ def plot_temperature_ovw(df):
     plt.gca().xaxis.set_major_formatter(mdates.DateFormatter('%b'))
     plt.tight_layout()
     
-    plt.savefig('temperature_overview.png', dpi=300)
+    plt.savefig('rslt_temperature_overview.png', dpi=300)
     return plt
 
 
 def plot_temperature_anomalies(df):
-    """Create temperature anomaly heatmap calendar"""
     # Create a pivot table for monthly temperature anomalies
     pivot_temp = df.pivot_table(
         index='Day', columns='Month', values='Avg_Temp_Deviation', aggfunc='mean'
@@ -117,12 +116,12 @@ def plot_temperature_anomalies(df):
     plt.xticks(np.arange(12)+0.5, month_labels)
     
     plt.tight_layout()
-    plt.savefig('temperature_anomalies.png', dpi=300)
+    plt.savefig('rslt_temperature_anomalies.png', dpi=300)
     return plt
 
 
 def plot_rainfall_analysis(df):
-    """Create rainfall analysis plot"""
+# Create rainfall analysis plot
     fig, (ax1, ax2) = plt.subplots(2, 1, figsize=(12, 10), sharex=True)
     
     # Daily rainfall with historical context
@@ -138,6 +137,7 @@ def plot_rainfall_analysis(df):
     
     ax1.set_title('Daily Rainfall with Historical Context')
     ax1.set_ylabel('Rainfall (mm)')
+    ax1.set_xlabel('Date')
     ax1.legend(loc='upper right')
     ax1.grid(True, alpha=0.3)
     
