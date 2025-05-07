@@ -1,12 +1,3 @@
-"""
-DMV302Tb.py - Practical Weather Data Analysis and Visualization
-This program analyzes weather data from DMVA3T2.csv focusing on:
-- Temperature trends and anomalies
-- Rainfall patterns and anomalies
-- Historical comparisons
-- Seasonal weather patterns
-"""
-
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
@@ -17,7 +8,7 @@ from scipy import stats
 
 
 def load_and_preprocess_data():
-    """Load and preprocess the weather data"""
+    # Load and preprocess the weather data
     # Define column names based on the description
     column_names = [
         'Date', 'Avg_Temp', 'Min_Temp', 'Max_Temp',
@@ -121,60 +112,57 @@ def plot_temperature_anomalies(df):
 
 
 def plot_rainfall_analysis(df):
-# Create rainfall analysis plot
-    fig, (ax1, ax2) = plt.subplots(2, 1, figsize=(12, 10), sharex=True)
+    # Create rainfall analysis plot
+    fig, (ax1, ax2) = plt.subplots(2, 1, figsize=(14, 12), sharex=True)
     
     # Daily rainfall with historical context
-    ax1.bar(df['Date'], df['Rainfall'], color='blue', alpha=0.6, label='Daily Rainfall')
-    ax1.plot(df['Date'], df['Historical_Avg_Rain'], color='navy', linestyle='--', 
-            label='Historical Average')
-    
+    ax1.bar(df['Date'], df['Rainfall'], color='cornflowerblue', alpha=0.4, label='Daily Rainfall')
+    ax1.plot(df['Date'], df['Historical_Avg_Rain'], color='steelblue', linestyle='--', label='Historical Average')
+
     # Highlight extreme rainfall days
     extreme_rain_days = df[df['Extreme_Rain_Day']]
     if not extreme_rain_days.empty:
-        ax1.bar(extreme_rain_days['Date'], extreme_rain_days['Rainfall'], 
-               color='red', label='Heavy Rainfall')
+        ax1.bar(extreme_rain_days['Date'], extreme_rain_days['Rainfall'], color='crimson', label='Heavy Rainfall')
     
     ax1.set_title('Daily Rainfall with Historical Context')
     ax1.set_ylabel('Rainfall (mm)')
     ax1.set_xlabel('Date')
     ax1.legend(loc='upper right')
     ax1.grid(True, alpha=0.3)
-    
+
     # Cumulative rainfall plot
-    ax2.plot(df['Date'], df['Cumulative_Rainfall'], color='blue', 
-             linewidth=2, label='Actual Cumulative')
-    ax2.plot(df['Date'], df['Cumulative_Avg_Rain'], color='navy', 
-             linestyle='--', linewidth=2, label='Expected (Historical)')
-    
+    ax2.plot(df['Date'], df['Cumulative_Rainfall'], color='teal', linewidth=2, label='Actual Cumulative')
+    ax2.plot(df['Date'], df['Cumulative_Avg_Rain'], color='darkslategray', linestyle='--', linewidth=2, label='Expected (Historical)')
+
     # Calculate and show the difference
     end_date = df['Date'].iloc[-1]
     actual_total = df['Cumulative_Rainfall'].iloc[-1]
     expected_total = df['Cumulative_Avg_Rain'].iloc[-1]
     percent_diff = ((actual_total - expected_total) / expected_total) * 100
-    
+
     # Add annotation about the difference
     ax2.annotate(f'Total: {actual_total:.1f}mm ({percent_diff:.1f}% vs historical)',
-                xy=(end_date, actual_total), xytext=(-150, 20),
-                textcoords='offset points', ha='right', va='bottom',
-                bbox=dict(boxstyle='round,pad=0.5', fc='yellow', alpha=0.5))
+                 xy=(end_date, actual_total), xytext=(-150, 20),
+                 textcoords='offset points', ha='right', va='bottom',
+                 bbox=dict(boxstyle='round,pad=0.5', fc='lightyellow', alpha=0.6))
     
     ax2.set_title('Cumulative Rainfall Comparison')
     ax2.set_ylabel('Total Rainfall (mm)')
     ax2.set_xlabel('Date')
     ax2.legend(loc='upper left')
     ax2.grid(True, alpha=0.3)
-    
-    # Format x-axis to show months
+
+    # Format x-axis to show months in the second subplot
     ax2.xaxis.set_major_locator(mdates.MonthLocator())
     ax2.xaxis.set_major_formatter(mdates.DateFormatter('%b'))
-    
+    plt.setp(ax2.get_xticklabels(), rotation=45, ha='right')
+
     plt.tight_layout()
-    plt.savefig('rainfall_analysis.png', dpi=300)
+    plt.savefig('rslt_rainfall_analysis.png', dpi=300)
     return fig
 
+
 def plot_climate_extremes(df):
-    """Identify and visualize climate extremes"""
     # Find days exceeding historical extremes
     record_high_days = df[df['Max_Temp'] > df['Historical_Highest']]
     record_low_days = df[df['Min_Temp'] < df['Historical_Lowest']]
@@ -183,8 +171,8 @@ def plot_climate_extremes(df):
     fig, (ax1, ax2) = plt.subplots(2, 1, figsize=(12, 10), sharex=True)
     
     # Temperature records
-    ax1.plot(df['Date'], df['Max_Temp'], 'r-', alpha=0.5)
-    ax1.plot(df['Date'], df['Min_Temp'], 'b-', alpha=0.5)
+    ax1.plot(df['Date'], df['Max_Temp'], 'r-', alpha=0.5, label='Daily Highest')
+    ax1.plot(df['Date'], df['Min_Temp'], 'b-', alpha=0.5, label='Daily lowest')
     ax1.plot(df['Date'], df['Historical_Highest'], 'r--', alpha=0.7, label='Historical Highest')
     ax1.plot(df['Date'], df['Historical_Lowest'], 'b--', alpha=0.7, label='Historical Lowest')
     
@@ -201,16 +189,19 @@ def plot_climate_extremes(df):
     ax1.set_ylabel('Temperature (°C)')
     ax1.legend(loc='best')
     ax1.grid(True, alpha=0.3)
-    
+
+    # Format x-axis
+    ax2.xaxis.set_major_locator(mdates.MonthLocator())
+    ax2.xaxis.set_major_formatter(mdates.DateFormatter('%b'))
     # Rainfall records
-    ax2.bar(df['Date'], df['Rainfall'], color='blue', alpha=0.6)
-    ax2.plot(df['Date'], df['Historical_Highest_Rain'], 'b--', 
+    ax2.bar(df['Date'], df['Rainfall'], color='green', alpha=0.6)
+    ax2.plot(df['Date'], df['Historical_Highest_Rain'], 'r--', 
            alpha=0.7, label='Historical Highest')
     
     # Highlight new rainfall records
     if not record_rain_days.empty:
         ax2.bar(record_rain_days['Date'], record_rain_days['Rainfall'], 
-              color='purple', label='New Rain Records')
+              color='red', label='New Rain Records')
     
     ax2.set_title('Rainfall Records')
     ax2.set_ylabel('Rainfall (mm)')
@@ -223,17 +214,17 @@ def plot_climate_extremes(df):
     ax2.xaxis.set_major_formatter(mdates.DateFormatter('%b'))
     
     plt.tight_layout()
-    plt.savefig('climate_extremes.png', dpi=300)
+    plt.savefig('rslt_climate_extremes.png', dpi=300)
     return fig
 
 
 def main():
-    """Main function to run all analyses"""
+    # Main function to run all analyses
     print("Starting weather data analysis...")
     
     # Load and preprocess the data
     df = load_and_preprocess_data()
-    print(f"Data loaded: {len(df)} days of weather data")
+    print(f"365 days of weather data loaded")
     # Generate all plots
     plot_temperature_ovw(df)
     plot_temperature_anomalies(df)
