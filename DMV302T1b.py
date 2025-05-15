@@ -14,7 +14,6 @@ from sklearn.cluster import KMeans
 # -------------------------------------
 # STEP 1: Load the CSV Data
 # File contains 3D data: X, Y, Z coordinates
-# -------------------------------------
 data = pd.read_csv('DMVA3T1.csv', header=None)
 # We rename the columns for clarity, default is none
 data.columns = ['x', 'y', 'z']
