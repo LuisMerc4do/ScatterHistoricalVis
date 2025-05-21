@@ -5,7 +5,7 @@ import seaborn as sns
 from matplotlib.colors import TwoSlopeNorm
 import matplotlib.dates as mdates
 from scipy import stats # For sd
-# APA 7
+# APA 7 2025
 # References. https://datavizcatalogue.com/index.html
 # Matplotlib dates https://matplotlib.org/stable/api/dates_api.html
 # Scipy stats for sd https://www.nature.com/articles/s41592-019-0686-2
